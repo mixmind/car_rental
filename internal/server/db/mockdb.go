@@ -14,37 +14,40 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var (
-	inMemoryDB *sql.DB
-	db         dbStruct
-)
-
-type dbStruct struct {
+type DBStruct struct {
 	internalDB *sql.DB
 	carsArray  []domain.Car
 }
 
-func init() {
-	var err error
-	inMemoryDB, err = sql.Open("sqlite3", "file:rental.db?cache=shared&mode=memory")
+/*
+Generates and fills Inmemory db with cars
+*/
+func NewDBStruct() (*DBStruct, error) {
+	inMemoryDB, err := sql.Open("sqlite3", "file:rental.db?cache=shared&mode=memory&_fk=true")
 	if err != nil {
-		log.Fatal("Failed to create inmemoryDB")
+		return nil, err
 	}
-}
-
-func NewDBStruct() error {
-	db = dbStruct{internalDB: inMemoryDB}
+	db := DBStruct{internalDB: inMemoryDB}
+	log.Info("Prefilling DB")
 	if err := db.createInMemoryTables(); err != nil {
-		return errors.Wrap(err, "Failed to create tables")
+		return nil, errors.Wrap(err, "Failed to create tables")
 	}
 	db.generateCarsData()
 	if err := db.insertCarsIntoDB(); err != nil {
-		return errors.Wrap(err, "Failed to insert cars into DB")
+		return nil, errors.Wrap(err, "Failed to insert cars into DB")
 	}
-	return nil
+	log.Info("DB filled sussesfully")
+	return &db, nil
 }
 
-func (db *dbStruct) createInMemoryTables() error {
+func NewDBStructWithDBProvided(inMemoryDB *sql.DB) *DBStruct {
+	return &DBStruct{internalDB: inMemoryDB}
+}
+
+/*
+Creates in memory tables such as cars and rents
+*/
+func (db *DBStruct) createInMemoryTables() error {
 	log.Info("Creating cars table")
 	if _, err := db.internalDB.Exec(createCarTable); err != nil {
 		return errors.Wrapf(err, "Failed to create cars table")
@@ -58,7 +61,10 @@ func (db *dbStruct) createInMemoryTables() error {
 	return nil
 }
 
-func (db *dbStruct) generateCarsData() {
+/*
+Creates mock car data
+*/
+func (db *DBStruct) generateCarsData() {
 	log.Info("Generating Cars data")
 
 	numberOfCars := rand.Intn(50)
@@ -70,7 +76,10 @@ func (db *dbStruct) generateCarsData() {
 	log.Info("Cars data generated sussesfully")
 }
 
-func (db *dbStruct) insertCarsIntoDB() error {
+/*
+Inserts mock car data into DB
+*/
+func (db *DBStruct) insertCarsIntoDB() error {
 	log.Println("Inserting cars records")
 	tx, err := db.internalDB.Begin()
 	if err != nil {
@@ -102,4 +111,16 @@ func (db *dbStruct) insertCarsIntoDB() error {
 	log.Info("Cars records inserted sussesfully")
 
 	return nil
+}
+
+func (db *DBStruct) BeginTransaction() (*sql.Tx, error) {
+	return db.internalDB.Begin()
+}
+
+func (db *DBStruct) Query(query string) (*sql.Rows, error) {
+	return db.internalDB.Query(query)
+}
+
+func (db *DBStruct) Prepare(query string) (*sql.Stmt, error) {
+	return db.internalDB.Prepare(query)
 }

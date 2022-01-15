@@ -12,8 +12,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func InsertRentInDB(rent domain.RentInfo, car domain.Car) (int64, error) {
-	tx, err := inMemoryDB.Begin()
+type RentProcessor struct {
+	dbStruct *db.DBStruct
+}
+
+func NewRentProcessor(dbStruct *db.DBStruct) *RentProcessor {
+	return &RentProcessor{dbStruct: dbStruct}
+}
+
+/*
+Insert rent into DB
+*/
+func (rentPr *RentProcessor) InsertRentInDB(rent domain.RentInfo, car domain.Car) (int64, error) {
+	tx, err := rentPr.dbStruct.BeginTransaction()
 	if err != nil {
 		return 0, errors.Wrap(err, "Failed to start a transaction")
 	}
@@ -31,7 +42,7 @@ func InsertRentInDB(rent domain.RentInfo, car domain.Car) (int64, error) {
 	if !checkCarProps(rent, car) {
 		return 0, fmt.Errorf("Some of new rent props are incorrect. Please check them again!")
 	}
-	if isExists, err := checkCarAvailability(rent, car); err != nil || isExists {
+	if isExists, err := rentPr.checkCarAvailability(rent, car); err != nil || isExists {
 		if err != nil {
 			log.Error(err)
 		}
@@ -68,8 +79,11 @@ func InsertRentInDB(rent domain.RentInfo, car domain.Car) (int64, error) {
 	return id, nil
 }
 
-func GetRentsFromDB() ([]domain.RentInfo, error) {
-	rows, err := inMemoryDB.Query(db.SelectRents)
+/*
+Get rents from DB
+*/
+func (rentPr *RentProcessor) GetRentsFromDB() ([]domain.RentInfo, error) {
+	rows, err := rentPr.dbStruct.Query(db.SelectRents)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to execute a sql query")
 	}
@@ -101,8 +115,11 @@ func GetRentsFromDB() ([]domain.RentInfo, error) {
 	return result, nil
 }
 
-func GetRentFromDB(rentID int) (*domain.RentInfo, error) {
-	stmt, err := inMemoryDB.Prepare(fmt.Sprintf("%s WHERE rent_id=?", db.SelectRents))
+/*
+Get rent from DB
+*/
+func (rentPr *RentProcessor) GetRentFromDB(rentID int) (*domain.RentInfo, error) {
+	stmt, err := rentPr.dbStruct.Prepare(fmt.Sprintf("%s WHERE rent_id=?", db.SelectRents))
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to prepare an sql query")
 	}
@@ -130,8 +147,11 @@ func GetRentFromDB(rentID int) (*domain.RentInfo, error) {
 	return &receivedRow, nil
 }
 
-func RemoveRentFromDB(rentID int) (int64, error) {
-	stmt, err := inMemoryDB.Prepare(db.RemoveRent)
+/*
+Remove rent from DB
+*/
+func (rentPr *RentProcessor) RemoveRentFromDB(rentID int) (int64, error) {
+	stmt, err := rentPr.dbStruct.Prepare(db.RemoveRent)
 	if err != nil {
 		return 0, errors.Wrap(err, "Failed to prepare an sql query")
 	}
@@ -149,6 +169,9 @@ func RemoveRentFromDB(rentID int) (int64, error) {
 	return affect, nil
 }
 
+/*
+Check if car information is correct in provided rent data
+*/
 func checkCarProps(rent domain.RentInfo, car domain.Car) bool {
 	locationExists := false
 	groupIsOK := false
@@ -202,11 +225,14 @@ func checkCarProps(rent domain.RentInfo, car domain.Car) bool {
 	return locationExists && groupIsOK && ageIsOK
 }
 
-func checkCarAvailability(rent domain.RentInfo, car domain.Car) (bool, error) {
+/*
+Check if car still available
+*/
+func (rentPr *RentProcessor) checkCarAvailability(rent domain.RentInfo, car domain.Car) (bool, error) {
 	searchParams := buildFromToFilter(rent.FromDate, rent.ToDate, true)
 	query := db.SelectCarsRents + " WHERE " + searchParams.DateFilter
-	log.Info(query)
-	rows, err := inMemoryDB.Query(query)
+	log.Debugln(query)
+	rows, err := rentPr.dbStruct.Query(query)
 	if err != nil {
 		return false, errors.Wrap(err, "Failed to execute a sql query")
 	}

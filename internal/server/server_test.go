@@ -3,7 +3,9 @@ package server
 import (
 	"bytes"
 	"car-rental/internal/server/cmds"
+	"car-rental/internal/server/db"
 	"car-rental/internal/server/domain"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -83,12 +85,23 @@ var (
 		AgeGroup: "130",
 		CarGroup: 14,
 	}
-	carID = ""
+	carID         = ""
+	inMemoryDB    *sql.DB
+	err           error
+	carProcessor  *cmds.CarProcessor
+	rentProcessor *cmds.RentProcessor
 )
 
 func init() {
 	go Launch()
+
 	time.Sleep(time.Second * 1)
+	inMemoryDB, err = sql.Open("sqlite3", "file:rental.db?cache=shared&mode=memory")
+	if err != nil {
+		log.Fatal("failed to create to inmemoryDB")
+	}
+	carProcessor = cmds.NewCarProcessor(db.NewDBStructWithDBProvided(inMemoryDB))
+	rentProcessor = cmds.NewRentProcessor(db.NewDBStructWithDBProvided(inMemoryDB))
 }
 
 func TestAPICars(test *testing.T) {
@@ -125,7 +138,7 @@ func TestAPICars(test *testing.T) {
 			test.Error(errors.Wrap(err, "Faled to unmarshal cars from response"))
 			test.FailNow()
 		}
-		carsFromDB, err := cmds.GetCarsFromDB()
+		carsFromDB, err := carProcessor.GetCarsFromDB()
 		if err != nil {
 			test.Error(errors.Wrap(err, "Faled to extract cars from DB"))
 			test.FailNow()
@@ -204,7 +217,7 @@ func TestAPIAddCarAndGetCar(test *testing.T) {
 		test.Error(errors.Wrap(err, "Faled to unmarshal cars from response"))
 		test.FailNow()
 	}
-	carFromDB, err := cmds.GetCarFromDB(car.CarID)
+	carFromDB, err := carProcessor.GetCarFromDB(car.CarID)
 	if err != nil {
 		test.Error(errors.Wrap(err, "Faled to extract cars from DB"))
 		test.FailNow()
@@ -264,7 +277,7 @@ func TestAPIPutCar(test *testing.T) {
 		test.Error(fmt.Errorf("Status is incorrect. Received %d, want %d", resp.StatusCode, http.StatusOK))
 		test.FailNow()
 	}
-	carFromDB, err := cmds.GetCarFromDB(1)
+	carFromDB, err := carProcessor.GetCarFromDB(1)
 	if err != nil {
 		test.Error(errors.Wrap(err, "Faled to extract cars from DB"))
 		test.FailNow()
@@ -299,7 +312,7 @@ func TestAPIDeleteCar(test *testing.T) {
 	}
 
 	test.Log("Car deleted sussesfully")
-	_, err = cmds.GetCarFromDB(1)
+	_, err = carProcessor.GetCarFromDB(1)
 	if err == nil {
 		test.Error("Error should be produces")
 		test.FailNow()
@@ -382,7 +395,7 @@ func TestAPIAddRentAndGetRent(test *testing.T) {
 		test.Error(errors.Wrap(err, "Faled to unmarshal rents from response"))
 		test.FailNow()
 	}
-	rentFromDB, err := cmds.GetRentFromDB(rent.RentID)
+	rentFromDB, err := rentProcessor.GetRentFromDB(rent.RentID)
 	if err != nil {
 		test.Error(errors.Wrap(err, "Faled to extract rents from DB"))
 		test.FailNow()
@@ -530,7 +543,7 @@ func TestAPIRents(test *testing.T) {
 			test.Error(errors.Wrap(err, "Faled to unmarshal rents from response"))
 			test.FailNow()
 		}
-		rentsFromDB, err := cmds.GetRentsFromDB()
+		rentsFromDB, err := rentProcessor.GetRentsFromDB()
 		if err != nil {
 			test.Error(errors.Wrap(err, "Faled to extract rents from DB"))
 			test.FailNow()
@@ -563,7 +576,7 @@ func TestAPIDeleteRent(test *testing.T) {
 	}
 
 	test.Log("Rent deleted sussesfully")
-	_, err = cmds.GetRentFromDB(1)
+	_, err = rentProcessor.GetRentFromDB(1)
 	if err == nil {
 		test.Error("Error should be produces")
 		test.FailNow()

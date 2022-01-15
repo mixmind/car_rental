@@ -14,7 +14,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func cars(writer http.ResponseWriter, request *http.Request) {
+/*
+Method responsible for cars listing and new car creating
+*/
+func (restPr *RestProcessor) cars(writer http.ResponseWriter, request *http.Request) {
+	carProcessor := cmds.NewCarProcessor(restPr.dbStruct)
 	responseCode := http.StatusOK
 	var responseMessage interface{}
 	var err error
@@ -28,7 +32,7 @@ func cars(writer http.ResponseWriter, request *http.Request) {
 			break
 		}
 		var id int64
-		id, err = cmds.InsertCarInDB(car)
+		id, err = carProcessor.InsertCarInDB(car)
 		if err != nil {
 			log.Error(err)
 			responseCode = http.StatusInternalServerError
@@ -40,9 +44,9 @@ func cars(writer http.ResponseWriter, request *http.Request) {
 	case http.MethodGet:
 		urlValues := request.URL.Query()
 		if len(urlValues) == 0 {
-			responseMessage, err = cmds.GetCarsFromDB()
+			responseMessage, err = carProcessor.GetCarsFromDB()
 		} else {
-			responseMessage, err = cmds.GetCarsFromDBWithParams(urlValues)
+			responseMessage, err = carProcessor.GetCarsFromDBWithParams(urlValues)
 		}
 	default:
 		responseCode = http.StatusBadRequest
@@ -55,7 +59,11 @@ func cars(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-func crudCars(writer http.ResponseWriter, request *http.Request) {
+/*
+Method responsible for car listing, car update and car deletion
+*/
+func (restPr *RestProcessor) crudCars(writer http.ResponseWriter, request *http.Request) {
+	carProcessor := cmds.NewCarProcessor(restPr.dbStruct)
 	responseCode := http.StatusOK
 	var responseMessage interface{}
 	var err error
@@ -70,33 +78,42 @@ func crudCars(writer http.ResponseWriter, request *http.Request) {
 	if !skipProcessing {
 		switch request.Method {
 		case http.MethodGet:
-			responseMessage, err = cmds.GetCarFromDB(carID)
+			responseMessage, err = carProcessor.GetCarFromDB(carID)
 		case http.MethodPut:
-			var car domain.Car
-			err = parseBodyToObj(request, &car)
-			if err != nil {
-				log.Error(err)
-				responseCode = http.StatusBadRequest
-				break
+			updateCarProcessing := func() {
+				restPr.carMutex.Lock()
+				defer restPr.carMutex.Unlock()
+				var car domain.Car
+				err = parseBodyToObj(request, &car)
+				if err != nil {
+					log.Error(err)
+					responseCode = http.StatusBadRequest
+					return
+				}
+				_, err = carProcessor.UpdateCarInDB(car, carID)
+				if err != nil {
+					log.Error(err)
+					responseCode = http.StatusInternalServerError
+					responseMessage = "Failed to update car"
+				} else {
+					responseMessage = "Car sussesfully updated"
+				}
 			}
-			_, err = cmds.UpdateCarInDB(car, carID)
-			if err != nil {
-				log.Error(err)
-				responseCode = http.StatusInternalServerError
-				responseMessage = "Failed to update car"
-			} else {
-				responseMessage = "Car sussesfully updated"
-			}
+			updateCarProcessing()
 		case http.MethodDelete:
-			_, err = cmds.RemoveCarFromDB(carID)
-			if err != nil {
-				log.Error(err)
-				responseCode = http.StatusInternalServerError
-				responseMessage = "Failed to remove car"
-			} else {
-				responseMessage = "Car sussesfully removed"
+			removeCarProcessing := func() {
+				restPr.carMutex.Lock()
+				defer restPr.carMutex.Unlock()
+				_, err = carProcessor.RemoveCarFromDB(carID)
+				if err != nil {
+					log.Error(err)
+					responseCode = http.StatusInternalServerError
+					responseMessage = "Failed to remove car"
+				} else {
+					responseMessage = "Car sussesfully removed"
+				}
 			}
-
+			removeCarProcessing()
 		default:
 			responseCode = http.StatusBadRequest
 			responseMessage = "This method is not allowed"

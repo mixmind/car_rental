@@ -6,25 +6,25 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
 )
 
-var inMemoryDB *sql.DB
-
-func init() {
-	var err error
-	inMemoryDB, err = sql.Open("sqlite3", "file:rental.db?cache=shared&mode=memory")
-	if err != nil {
-		log.Fatal(errors.Wrap(err, "Failed connection to inmemory DB"))
-	}
+type CarProcessor struct {
+	dbStruct *db.DBStruct
 }
 
-func InsertCarInDB(car domain.Car) (int64, error) {
-	tx, err := inMemoryDB.Begin()
+func NewCarProcessor(dbStruct *db.DBStruct) *CarProcessor {
+	return &CarProcessor{dbStruct: dbStruct}
+}
+
+/*
+Insert car into DB
+*/
+func (carPr *CarProcessor) InsertCarInDB(car domain.Car) (int64, error) {
+	tx, err := carPr.dbStruct.BeginTransaction()
 	if err != nil {
 		return 0, errors.Wrap(err, "Failed to start a transaction")
 	}
@@ -57,8 +57,11 @@ func InsertCarInDB(car domain.Car) (int64, error) {
 	return id, nil
 }
 
-func GetCarsFromDB() ([]domain.Car, error) {
-	rows, err := inMemoryDB.Query(db.SelectCars)
+/*
+Get cars from DB
+*/
+func (carPr *CarProcessor) GetCarsFromDB() ([]domain.Car, error) {
+	rows, err := carPr.dbStruct.Query(db.SelectCars)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to execute a sql query")
 	}
@@ -89,8 +92,11 @@ func GetCarsFromDB() ([]domain.Car, error) {
 	return result, nil
 }
 
-func GetCarsFromDBWithParams(values map[string][]string) ([]domain.CombinedRentInfo, error) {
-	searchParams := extractURLValues(values)
+/*
+Get filtered cars from DB
+*/
+func (carPr *CarProcessor) GetCarsFromDBWithParams(values map[string][]string) ([]domain.CombinedRentInfo, error) {
+	searchParams := carPr.extractURLValues(values)
 	query := db.SelectCarsRents
 
 	if len(searchParams.DefaultFilter) > 0 {
@@ -101,8 +107,8 @@ func GetCarsFromDBWithParams(values map[string][]string) ([]domain.CombinedRentI
 	} else if len(searchParams.DefaultFilter) > 0 && len(searchParams.DateFilter) > 0 {
 		query += " and " + searchParams.DateFilter
 	}
-	log.Info(query)
-	rows, err := inMemoryDB.Query(query)
+	log.Debugln(query)
+	rows, err := carPr.dbStruct.Query(query)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to execute a sql query")
 	}
@@ -156,8 +162,11 @@ func GetCarsFromDBWithParams(values map[string][]string) ([]domain.CombinedRentI
 	return result, nil
 }
 
-func GetCarFromDB(carID int) (*domain.Car, error) {
-	stmt, err := inMemoryDB.Prepare(fmt.Sprintf("%s WHERE car_id=?", db.SelectCars))
+/*
+Get car from DB upon car ID
+*/
+func (carPr *CarProcessor) GetCarFromDB(carID int) (*domain.Car, error) {
+	stmt, err := carPr.dbStruct.Prepare(fmt.Sprintf("%s WHERE car_id=?", db.SelectCars))
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to prepare an sql query")
 	}
@@ -181,8 +190,11 @@ func GetCarFromDB(carID int) (*domain.Car, error) {
 	return &receivedRow, nil
 }
 
-func UpdateCarInDB(car domain.Car, carID int) (int64, error) {
-	stmt, err := inMemoryDB.Prepare(db.UpdateCar)
+/*
+Update car in DB
+*/
+func (carPr *CarProcessor) UpdateCarInDB(car domain.Car, carID int) (int64, error) {
+	stmt, err := carPr.dbStruct.Prepare(db.UpdateCar)
 	if err != nil {
 		return 0, errors.Wrap(err, "Failed to prepare an sql query")
 	}
@@ -211,8 +223,11 @@ func UpdateCarInDB(car domain.Car, carID int) (int64, error) {
 	return affect, nil
 }
 
-func RemoveCarFromDB(carID int) (int64, error) {
-	stmt, err := inMemoryDB.Prepare(db.RemoveCar)
+/*
+Remove car from DB
+*/
+func (carPr *CarProcessor) RemoveCarFromDB(carID int) (int64, error) {
+	stmt, err := carPr.dbStruct.Prepare(db.RemoveCar)
 	if err != nil {
 		return 0, errors.Wrap(err, "Failed to prepare an sql query")
 	}
@@ -230,7 +245,10 @@ func RemoveCarFromDB(carID int) (int64, error) {
 	return affect, nil
 }
 
-func extractURLValues(values map[string][]string) domain.SearchParams {
+/*
+Create filter from URL values
+*/
+func (carPr *CarProcessor) extractURLValues(values map[string][]string) domain.SearchParams {
 	fromExists := ""
 	toExists := ""
 	if from, ok := values[domain.FromDateUrlValue]; ok {
@@ -282,41 +300,6 @@ func extractURLValues(values map[string][]string) domain.SearchParams {
 			}
 			searchParams.DefaultFilter += " car_group=" + car[0]
 		}
-	}
-	return searchParams
-}
-
-func buildFromToFilter(from string, to string, isExists bool) domain.SearchParams {
-	var searchParams domain.SearchParams
-	fromExists := false
-	if len(from) > 0 {
-		fromExists = true
-	}
-	if fromExists && len(to) > 0 {
-		brokenTime := false
-		covertFrom, err := time.Parse(domain.TimeLayout, from)
-		if err != nil {
-			brokenTime = true
-			log.Error(err)
-		}
-		covertTo, err := time.Parse(domain.TimeLayout, to)
-		if err != nil {
-			brokenTime = true
-			log.Error(err)
-		}
-		if !covertFrom.Before(covertTo) {
-			log.Error("Please provide correct dates, from must be less than too")
-			brokenTime = true
-		}
-		if !brokenTime && !isExists {
-			searchParams.DateFilter += " (to_time IS NULL or to_time<'" + from + "') or"
-			searchParams.DateFilter += " (from_time IS NULL or from_time>'" + to + "')"
-		} else if !brokenTime && isExists {
-			searchParams.DateFilter += " (to_time IS NOT NULL AND from_time IS NOT NULL) and"
-			searchParams.DateFilter += " ((from_time between '" + from + "' and '" + to + "') or (to_time between '" + from + "' and '" + to + "')) or "
-			searchParams.DateFilter += " (from_time <='" + from + "' and to_time >= '" + to + "')"
-		}
-
 	}
 	return searchParams
 }

@@ -17,19 +17,21 @@ const restPort = 1020
 var (
 	server *http.Server
 	ctx    context.Context
+	cancel context.CancelFunc
 )
 
 func Launch() error {
-	err := db.NewDBStruct()
+	log.Info("Starting Server")
+	dbStruct, err := db.NewDBStruct()
 	if err != nil {
 		return err
 	}
-	rtr, err := rest.NewServer()
+	ctx, cancel = context.WithCancel(context.Background())
+	rtr, err := rest.NewServer(dbStruct)
 	if err != nil {
 		return err
 	}
 	go func() {
-		ctx = context.Background()
 		server = &http.Server{Addr: fmt.Sprintf(":%d", restPort), Handler: rtr}
 		err := server.ListenAndServe()
 		if !errors.Is(err, http.ErrServerClosed) {
@@ -40,10 +42,16 @@ func Launch() error {
 		}
 
 	}()
-	select {}
+	log.Info("Server started")
+	select {
+	case <-ctx.Done():
+		log.Info("Server is stopped")
+		return nil
+	}
 }
 
 func ShutDown() {
 	fmt.Println("Shutting down the HTTP server...")
 	server.Shutdown(ctx)
+	cancel()
 }

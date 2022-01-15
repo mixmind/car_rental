@@ -722,7 +722,7 @@ GET http://localhost:1020/api/cars/2
 # }
 
 ### Delete car
-DELETE http://localhost:1020/api/cars/1
+DELETE http://localhost:1020/api/cars/2
 
 #Response
 # {
@@ -787,7 +787,7 @@ POST http://localhost:1020/api/rents
       "carID": 2,
       "fromDate": "2022-01-15T15:13:30Z",
       "toDate": "2022-01-15T15:15:30Z",
-      "location": "Netanya",
+      "location": "Holon",
       "availableExtras": [
         "Free day"
       ],
@@ -795,7 +795,7 @@ POST http://localhost:1020/api/rents
         "5%"
       ],
       "ageGroup":"70",
-      "carGroup":3
+      "carGroup":4
 }
 
 #Response

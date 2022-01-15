@@ -10,14 +10,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func rents(writer http.ResponseWriter, request *http.Request) {
+/*
+Method responsible for rents listing and rent info creation
+*/
+func (restPr *RestProcessor) rents(writer http.ResponseWriter, request *http.Request) {
+	carProcessor := cmds.NewCarProcessor(restPr.dbStruct)
+	rentProcessor := cmds.NewRentProcessor(restPr.dbStruct)
+
 	responseCode := http.StatusOK
 	var responseMessage interface{}
 	var err error
 
 	switch request.Method {
 	case http.MethodGet:
-		responseMessage, err = cmds.GetRentsFromDB()
+		responseMessage, err = rentProcessor.GetRentsFromDB()
 	case http.MethodPost:
 		var rent domain.RentInfo
 		err = parseBodyToObj(request, &rent)
@@ -26,23 +32,28 @@ func rents(writer http.ResponseWriter, request *http.Request) {
 			responseCode = http.StatusBadRequest
 			break
 		}
-		var car *domain.Car
-		car, err = cmds.GetCarFromDB(rent.CarID)
-		if err != nil {
-			log.Error(err)
-			responseCode = http.StatusBadRequest
-			break
+		insertRentProcessing := func() {
+			restPr.carMutex.Lock()
+			defer restPr.carMutex.Unlock()
+			var car *domain.Car
+			car, err = carProcessor.GetCarFromDB(rent.CarID)
+			if err != nil {
+				log.Error(err)
+				responseCode = http.StatusBadRequest
+				return
+			}
+			var id int64
+			id, err = rentProcessor.InsertRentInDB(rent, *car)
+			if err != nil {
+				log.Error(err)
+				responseCode = http.StatusConflict
+				responseMessage = "Failed to insert rent info"
+			} else {
+				responseCode = http.StatusCreated
+				responseMessage = fmt.Sprintf("Rent info sussesfully inserted. Rent ID number = %d", id)
+			}
 		}
-		var id int64
-		id, err = cmds.InsertRentInDB(rent, *car)
-		if err != nil {
-			log.Error(err)
-			responseCode = http.StatusConflict
-			responseMessage = "Failed to insert rent info"
-		} else {
-			responseCode = http.StatusCreated
-			responseMessage = fmt.Sprintf("Rent info sussesfully inserted. Rent ID number = %d", id)
-		}
+		insertRentProcessing()
 	}
 
 	if _, err := domain.WriteResponse(writer, responseCode, responseMessage, err); err != nil {
@@ -50,7 +61,12 @@ func rents(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func rentDetails(writer http.ResponseWriter, request *http.Request) {
+/*
+Method responsible for rent listing and rent deletion
+*/
+func (restPr *RestProcessor) rentDetails(writer http.ResponseWriter, request *http.Request) {
+	rentProcessor := cmds.NewRentProcessor(restPr.dbStruct)
+
 	responseCode := http.StatusOK
 	var responseMessage interface{}
 	var err error
@@ -65,10 +81,10 @@ func rentDetails(writer http.ResponseWriter, request *http.Request) {
 	if !skipProcessing {
 		switch request.Method {
 		case http.MethodGet:
-			responseMessage, err = cmds.GetRentFromDB(rentID)
+			responseMessage, err = rentProcessor.GetRentFromDB(rentID)
 
 		case http.MethodDelete:
-			_, err = cmds.RemoveRentFromDB(rentID)
+			_, err = rentProcessor.RemoveRentFromDB(rentID)
 			if err != nil {
 				log.Error(err)
 				responseCode = http.StatusInternalServerError

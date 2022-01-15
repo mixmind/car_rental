@@ -20,7 +20,8 @@ var (
 					location TEXT,
 					extras TEXT,
 					discounts TEXT,
-					rent_detail text
+					rent_detail text,
+					FOREIGN KEY(car_id) REFERENCES cars(car_id) ON DELETE RESTRICT
 					);`
 	InsertIntoCarTable = `INSERT INTO cars(car_comp_name , doors,
 												big_lag, small_lag,

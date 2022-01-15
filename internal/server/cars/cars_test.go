@@ -8,6 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+/*
+Test car creation, that with same seed will be produces same car each time
+*/
 func TestCarGeneration(test *testing.T) {
 	for i := 0; i < 100000; i++ {
 		seed := int64(time.Now().UTC().UnixNano())

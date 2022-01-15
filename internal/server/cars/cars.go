@@ -5,6 +5,22 @@ import (
 	"math/rand"
 )
 
+/*
+Generate new car with random parameters information
+Car Company name:"Mercedes", "BMW", "Fiat", "Seat", "Kia", "Hyundai", "Renault", "Peugeot", "Suzuki"
+Doors:3-5
+Big Luggage:0-4
+Small Luggage:0-5
+Adult places:2-7
+Air confitioner:true/false
+Minimum Drivers Age:24-65
+Price:5-500
+Available Locations: "Jerusalem",		"Tel Aviv",		"Haifa",		"Ashdod",		"Rishon LeZiyyon",		"Petah Tikva",		"Beersheba",
+					"Netanya",		"Holon",		"Bnei Brak",		"Rehovot",		"Bat Yam"
+Car Group:1-5
+Car Random decription:"Brand new car",		"Best choice for big family",		"Best choice for couples",		"Best choice for rich people",		"Small gas consumption",
+							"Best choice for wild drivers",		"Best choice for new drivers",		"Best choice for city driving",		"Best choice for international trips"
+*/
 func GenerateNewCar(seed int64) domain.Car {
 	rand.Seed(seed)
 
@@ -32,6 +48,9 @@ func randIntWithMax(min int, max int) int {
 	return min + rand.Intn(max-min+1)
 }
 
+/*
+Generatate complex car information as array
+*/
 func generateAdditionalFeatures(numberOfObjects int, limitOfObjects int, objectsList []string) []string {
 	var objectsArray []string
 	objectsMap := make(map[string]bool, numberOfObjects)
@@ -45,6 +64,9 @@ func generateAdditionalFeatures(numberOfObjects int, limitOfObjects int, objects
 	return objectsArray
 }
 
+/*
+Generatate car description
+*/
 func generateDescription() string {
 	return domain.CarDescriptionList[randInt(0, 8)]
 }
