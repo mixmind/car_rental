@@ -1,0 +1,838 @@
+### List all cars
+GET http://localhost:1020/api/cars
+
+# Response 
+#{
+#   "responseMessage": [
+#     {
+#       "carID": 1,
+#       "carCompanyName": "Mercedes",
+#       "doors": 3,
+#       "bigLaggage": 2,
+#       "smallLaggage": 1,
+#       "adultPlaces": 2,
+#       "airConditioner": true,
+#       "minimumAge": 49,
+#       "price": 453,
+#       "availableLocations": [
+#         "Rishon LeZiyyon",
+#         "Holon",
+#         "Rehovot",
+#         "Tel Aviv"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for big family"
+#     },
+#     {
+#       "carID": 2,
+#       "carCompanyName": "Renault",
+#       "doors": 3,
+#       "bigLaggage": 1,
+#       "smallLaggage": 2,
+#       "adultPlaces": 6,
+#       "airConditioner": true,
+#       "minimumAge": 50,
+#       "price": 322,
+#       "availableLocations": [
+#         "Haifa",
+#         "Tel Aviv",
+#         "Rishon LeZiyyon",
+#         "Beersheba",
+#         "Holon",
+#         "Rehovot",
+#         "Petah Tikva",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 3,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 3,
+#       "carCompanyName": "Renault",
+#       "doors": 5,
+#       "bigLaggage": 3,
+#       "smallLaggage": 4,
+#       "adultPlaces": 2,
+#       "airConditioner": false,
+#       "minimumAge": 42,
+#       "price": 231,
+#       "availableLocations": [
+#         "Jerusalem",
+#         "Bat Yam",
+#         "Tel Aviv"
+#       ],
+#       "carGroup": 1,
+#       "description": "Small gas consumption"
+#     },
+#     {
+#       "carID": 4,
+#       "carCompanyName": "Seat",
+#       "doors": 3,
+#       "smallLaggage": 5,
+#       "adultPlaces": 4,
+#       "airConditioner": false,
+#       "minimumAge": 40,
+#       "price": 185,
+#       "availableLocations": [
+#         "Bnei Brak",
+#         "Rishon LeZiyyon",
+#         "Tel Aviv",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 1,
+#       "description": "Small gas consumption"
+#     },
+#     {
+#       "carID": 5,
+#       "carCompanyName": "Mercedes",
+#       "doors": 5,
+#       "smallLaggage": 3,
+#       "adultPlaces": 4,
+#       "airConditioner": true,
+#       "minimumAge": 33,
+#       "price": 26,
+#       "availableLocations": [
+#         "Beersheba",
+#         "Tel Aviv",
+#         "Ashdod",
+#         "Holon"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for new drivers"
+#     },
+#     {
+#       "carID": 6,
+#       "carCompanyName": "Mercedes",
+#       "doors": 3,
+#       "bigLaggage": 2,
+#       "smallLaggage": 3,
+#       "adultPlaces": 2,
+#       "airConditioner": true,
+#       "minimumAge": 43,
+#       "price": 486,
+#       "availableLocations": [
+#         "Haifa",
+#         "Rehovot",
+#         "Beersheba",
+#         "Tel Aviv",
+#         "Jerusalem",
+#         "Petah Tikva"
+#       ],
+#       "carGroup": 1,
+#       "description": "Best choise for city driving"
+#     },
+#     {
+#       "carID": 7,
+#       "carCompanyName": "Kia",
+#       "doors": 5,
+#       "bigLaggage": 4,
+#       "smallLaggage": 3,
+#       "adultPlaces": 2,
+#       "airConditioner": false,
+#       "minimumAge": 36,
+#       "price": 488,
+#       "availableLocations": [
+#         "Netanya",
+#         "Rishon LeZiyyon",
+#         "Ashdod"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for city driving"
+#     },
+#     {
+#       "carID": 8,
+#       "carCompanyName": "Seat",
+#       "doors": 3,
+#       "bigLaggage": 3,
+#       "smallLaggage": 3,
+#       "adultPlaces": 2,
+#       "airConditioner": false,
+#       "minimumAge": 29,
+#       "price": 247,
+#       "availableLocations": [
+#         "Tel Aviv",
+#         "Holon",
+#         "Rishon LeZiyyon",
+#         "Jerusalem",
+#         "Beersheba",
+#         "Bat Yam"
+#       ],
+#       "carGroup": 1,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 9,
+#       "carCompanyName": "Kia",
+#       "doors": 3,
+#       "bigLaggage": 2,
+#       "smallLaggage": 5,
+#       "adultPlaces": 4,
+#       "airConditioner": true,
+#       "minimumAge": 38,
+#       "price": 59,
+#       "availableLocations": [
+#         "Bat Yam",
+#         "Bnei Brak",
+#         "Petah Tikva",
+#         "Jerusalem",
+#         "Holon",
+#         "Ashdod"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for rich people"
+#     },
+#     {
+#       "carID": 10,
+#       "carCompanyName": "Hyundai",
+#       "doors": 4,
+#       "bigLaggage": 1,
+#       "smallLaggage": 2,
+#       "adultPlaces": 3,
+#       "airConditioner": false,
+#       "minimumAge": 38,
+#       "price": 457,
+#       "availableLocations": [
+#         "Ashdod"
+#       ],
+#       "carGroup": 3,
+#       "description": "Brand new car"
+#     },
+#     {
+#       "carID": 11,
+#       "carCompanyName": "Suzuki",
+#       "doors": 5,
+#       "bigLaggage": 1,
+#       "smallLaggage": 2,
+#       "adultPlaces": 7,
+#       "airConditioner": true,
+#       "minimumAge": 54,
+#       "price": 90,
+#       "availableLocations": [
+#         "Rishon LeZiyyon"
+#       ],
+#       "carGroup": 1,
+#       "description": "Best choise for rich people"
+#     },
+#     {
+#       "carID": 12,
+#       "carCompanyName": "BMW",
+#       "doors": 4,
+#       "bigLaggage": 3,
+#       "adultPlaces": 6,
+#       "airConditioner": false,
+#       "minimumAge": 26,
+#       "price": 217,
+#       "availableLocations": [
+#         "Bat Yam"
+#       ],
+#       "carGroup": 4,
+#       "description": "Best choise for couples"
+#     },
+#     {
+#       "carID": 13,
+#       "carCompanyName": "Kia",
+#       "doors": 5,
+#       "smallLaggage": 3,
+#       "adultPlaces": 6,
+#       "airConditioner": true,
+#       "minimumAge": 37,
+#       "price": 264,
+#       "availableLocations": [
+#         "Bnei Brak",
+#         "Jerusalem",
+#         "Bat Yam",
+#         "Holon",
+#         "Rishon LeZiyyon",
+#         "Tel Aviv"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 14,
+#       "carCompanyName": "BMW",
+#       "doors": 4,
+#       "bigLaggage": 2,
+#       "smallLaggage": 5,
+#       "adultPlaces": 6,
+#       "airConditioner": false,
+#       "minimumAge": 63,
+#       "price": 173,
+#       "availableLocations": [
+#         "Tel Aviv",
+#         "Bat Yam",
+#         "Netanya",
+#         "Petah Tikva",
+#         "Haifa",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 15,
+#       "carCompanyName": "Peugeot",
+#       "doors": 4,
+#       "bigLaggage": 3,
+#       "smallLaggage": 2,
+#       "adultPlaces": 4,
+#       "airConditioner": false,
+#       "minimumAge": 40,
+#       "price": 310,
+#       "availableLocations": [
+#         "Netanya",
+#         "Beersheba",
+#         "Haifa",
+#         "Holon"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for rich people"
+#     },
+#     {
+#       "carID": 16,
+#       "carCompanyName": "Suzuki",
+#       "doors": 5,
+#       "bigLaggage": 2,
+#       "smallLaggage": 3,
+#       "adultPlaces": 4,
+#       "airConditioner": true,
+#       "minimumAge": 61,
+#       "price": 325,
+#       "availableLocations": [
+#         "Ashdod",
+#         "Netanya",
+#         "Bnei Brak",
+#         "Tel Aviv",
+#         "Holon",
+#         "Bat Yam",
+#         "Petah Tikva",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 2,
+#       "description": "Small gas consumption"
+#     },
+#     {
+#       "carID": 17,
+#       "carCompanyName": "Hyundai",
+#       "doors": 4,
+#       "smallLaggage": 5,
+#       "adultPlaces": 4,
+#       "airConditioner": false,
+#       "minimumAge": 41,
+#       "price": 42,
+#       "availableLocations": [
+#         "Ashdod",
+#         "Tel Aviv",
+#         "Netanya",
+#         "Bnei Brak",
+#         "Haifa",
+#         "Jerusalem",
+#         "Holon"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for city driving"
+#     },
+#     {
+#       "carID": 18,
+#       "carCompanyName": "Seat",
+#       "doors": 3,
+#       "smallLaggage": 4,
+#       "adultPlaces": 5,
+#       "airConditioner": false,
+#       "minimumAge": 56,
+#       "price": 359,
+#       "availableLocations": [
+#         "Haifa"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for couples"
+#     },
+#     {
+#       "carID": 19,
+#       "carCompanyName": "Peugeot",
+#       "doors": 3,
+#       "smallLaggage": 2,
+#       "adultPlaces": 7,
+#       "airConditioner": true,
+#       "minimumAge": 50,
+#       "price": 437,
+#       "availableLocations": [
+#         "Ashdod",
+#         "Rehovot",
+#         "Tel Aviv",
+#         "Netanya",
+#         "Holon",
+#         "Bnei Brak",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 4,
+#       "description": "Small gas consumption"
+#     },
+#     {
+#       "carID": 20,
+#       "carCompanyName": "BMW",
+#       "doors": 3,
+#       "smallLaggage": 4,
+#       "adultPlaces": 7,
+#       "airConditioner": true,
+#       "minimumAge": 41,
+#       "price": 491,
+#       "availableLocations": [
+#         "Bnei Brak",
+#         "Tel Aviv",
+#         "Beersheba",
+#         "Petah Tikva"
+#       ],
+#       "carGroup": 1,
+#       "description": "Best choise for city driving"
+#     },
+#     {
+#       "carID": 21,
+#       "carCompanyName": "Hyundai",
+#       "doors": 5,
+#       "bigLaggage": 1,
+#       "smallLaggage": 1,
+#       "adultPlaces": 2,
+#       "airConditioner": false,
+#       "minimumAge": 61,
+#       "price": 60,
+#       "availableLocations": [
+#         "Holon",
+#         "Rishon LeZiyyon",
+#         "Ashdod",
+#         "Jerusalem",
+#         "Rehovot"
+#       ],
+#       "carGroup": 4,
+#       "description": "Brand new car"
+#     },
+#     {
+#       "carID": 22,
+#       "carCompanyName": "Suzuki",
+#       "doors": 5,
+#       "smallLaggage": 2,
+#       "adultPlaces": 4,
+#       "airConditioner": false,
+#       "minimumAge": 31,
+#       "price": 57,
+#       "availableLocations": [
+#         "Rehovot",
+#         "Bat Yam",
+#         "Rishon LeZiyyon",
+#         "Tel Aviv",
+#         "Bnei Brak"
+#       ],
+#       "carGroup": 4,
+#       "description": "Best choise for big family"
+#     },
+#     {
+#       "carID": 23,
+#       "carCompanyName": "Kia",
+#       "doors": 5,
+#       "bigLaggage": 1,
+#       "smallLaggage": 5,
+#       "adultPlaces": 2,
+#       "airConditioner": true,
+#       "minimumAge": 27,
+#       "price": 106,
+#       "availableLocations": [
+#         "Beersheba"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for new drivers"
+#     },
+#     {
+#       "carID": 24,
+#       "carCompanyName": "Hyundai",
+#       "doors": 4,
+#       "bigLaggage": 4,
+#       "smallLaggage": 1,
+#       "adultPlaces": 5,
+#       "airConditioner": false,
+#       "minimumAge": 25,
+#       "price": 492,
+#       "availableLocations": [
+#         "Holon",
+#         "Bnei Brak",
+#         "Bat Yam",
+#         "Ashdod",
+#         "Haifa",
+#         "Netanya",
+#         "Tel Aviv",
+#         "Jerusalem"
+#       ],
+#       "carGroup": 3,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 25,
+#       "carCompanyName": "Fiat",
+#       "doors": 3,
+#       "bigLaggage": 1,
+#       "smallLaggage": 4,
+#       "adultPlaces": 7,
+#       "airConditioner": false,
+#       "minimumAge": 55,
+#       "price": 288,
+#       "availableLocations": [
+#         "Petah Tikva",
+#         "Haifa",
+#         "Tel Aviv"
+#       ],
+#       "carGroup": 2,
+#       "description": "Brand new car"
+#     },
+#     {
+#       "carID": 26,
+#       "carCompanyName": "Fiat",
+#       "doors": 3,
+#       "bigLaggage": 4,
+#       "smallLaggage": 2,
+#       "adultPlaces": 5,
+#       "airConditioner": true,
+#       "minimumAge": 56,
+#       "price": 193,
+#       "availableLocations": [
+#         "Haifa",
+#         "Rishon LeZiyyon",
+#         "Ashdod",
+#         "Holon"
+#       ],
+#       "carGroup": 4,
+#       "description": "Best choise for couples"
+#     },
+#     {
+#       "carID": 27,
+#       "carCompanyName": "BMW",
+#       "doors": 3,
+#       "bigLaggage": 3,
+#       "smallLaggage": 4,
+#       "adultPlaces": 5,
+#       "airConditioner": true,
+#       "minimumAge": 54,
+#       "price": 347,
+#       "availableLocations": [
+#         "Bnei Brak",
+#         "Rishon LeZiyyon"
+#       ],
+#       "carGroup": 4,
+#       "description": "Best choise for rich people"
+#     },
+#     {
+#       "carID": 28,
+#       "carCompanyName": "Peugeot",
+#       "doors": 5,
+#       "bigLaggage": 2,
+#       "smallLaggage": 4,
+#       "adultPlaces": 3,
+#       "airConditioner": false,
+#       "minimumAge": 55,
+#       "price": 365,
+#       "availableLocations": [
+#         "Haifa",
+#         "Bnei Brak",
+#         "Rehovot",
+#         "Petah Tikva",
+#         "Ashdod",
+#         "Rishon LeZiyyon"
+#       ],
+#       "carGroup": 4,
+#       "description": "Brand new car"
+#     },
+#     {
+#       "carID": 29,
+#       "carCompanyName": "Peugeot",
+#       "doors": 5,
+#       "bigLaggage": 3,
+#       "adultPlaces": 7,
+#       "airConditioner": false,
+#       "minimumAge": 42,
+#       "price": 129,
+#       "availableLocations": [
+#         "Bnei Brak",
+#         "Bat Yam",
+#         "Jerusalem",
+#         "Holon",
+#         "Rehovot",
+#         "Rishon LeZiyyon"
+#       ],
+#       "carGroup": 5,
+#       "description": "Brand new car"
+#     },
+#     {
+#       "carID": 30,
+#       "carCompanyName": "Seat",
+#       "doors": 4,
+#       "bigLaggage": 3,
+#       "adultPlaces": 3,
+#       "airConditioner": true,
+#       "minimumAge": 24,
+#       "price": 418,
+#       "availableLocations": [
+#         "Bat Yam",
+#         "Holon",
+#         "Ashdod"
+#       ],
+#       "carGroup": 3,
+#       "description": "Best choise for wild drivers"
+#     },
+#     {
+#       "carID": 31,
+#       "carCompanyName": "Peugeot",
+#       "doors": 3,
+#       "smallLaggage": 3,
+#       "adultPlaces": 6,
+#       "airConditioner": false,
+#       "minimumAge": 27,
+#       "price": 293,
+#       "availableLocations": [
+#         "Rehovot",
+#         "Beersheba",
+#         "Bnei Brak",
+#         "Ashdod",
+#         "Rishon LeZiyyon",
+#         "Bat Yam",
+#         "Netanya"
+#       ],
+#       "carGroup": 5,
+#       "description": "Best choise for wild drivers"
+#     }
+#   ],
+#   "responseError": ""
+# }
+
+### List cars located in Tel Aviv or Jerusalem with age interval 30-45 and car group=2
+GET http://localhost:1020/api/cars?location=Tel Aviv,Jerusalem&age=30-45&car=2
+
+# Response
+# {
+#   "responseMessage": [
+#     {
+#       "carID": 5,
+#       "carCompanyName": "Mercedes",
+#       "doors": 5,
+#       "smallLaggage": 3,
+#       "adultPlaces": 4,
+#       "airConditioner": true,
+#       "minimumAge": 33,
+#       "price": 26,
+#       "availableLocations": [
+#         "Beersheba",
+#         "Tel Aviv",
+#         "Ashdod",
+#         "Holon"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for new drivers",
+#       "availableExtras": [
+#         ""
+#       ],
+#       "discounts": [
+#         ""
+#       ]
+#     },
+#     {
+#       "carID": 9,
+#       "carCompanyName": "Kia",
+#       "doors": 3,
+#       "bigLaggage": 2,
+#       "smallLaggage": 5,
+#       "adultPlaces": 4,
+#       "airConditioner": true,
+#       "minimumAge": 38,
+#       "price": 59,
+#       "availableLocations": [
+#         "Bat Yam",
+#         "Bnei Brak",
+#         "Petah Tikva",
+#         "Jerusalem",
+#         "Holon",
+#         "Ashdod"
+#       ],
+#       "carGroup": 2,
+#       "description": "Best choise for rich people",
+#       "availableExtras": [
+#         ""
+#       ],
+#       "discounts": [
+#         ""
+#       ]
+#     }
+#   ],
+#   "responseError": ""
+# }
+### List cars that can be rented between 2022-01-14T15:13:30Z and 2022-01-15T15:13:30Z
+GET http://localhost:1020/api/cars?fromDate=2022-01-14T15:13:30Z&toDate=2022-01-15T15:13:30Z
+
+#Response is of same structure as previous request. The difference that can be is number of cars that are available in such dates
+
+### Create car
+POST http://localhost:1020/api/cars
+
+{
+      "carCompanyName": "MyCar",
+      "doors": 5,
+      "bigLuggage": 1,
+      "smallLuggage": 4,
+      "adultPlaces": 7,
+      "airConditioner": false,
+      "minimumAge": 61,
+      "price": 5,
+      "carGroup": 4,
+      "availableLocations":[
+        "New York"
+      ],
+      "description": "Best choice for big family"
+}
+
+#Response
+# {
+#   "responseMessage": "New Car Sussesfully Added. Car ID number = 32",
+#   "responseError": ""
+# }
+### Get car
+GET http://localhost:1020/api/cars/2
+
+#Response
+# {
+#   "responseMessage": {
+#     "carID": 2,
+#     "carCompanyName": "Renault",
+#     "doors": 3,
+#     "bigLaggage": 1,
+#     "smallLaggage": 2,
+#     "adultPlaces": 6,
+#     "airConditioner": true,
+#     "minimumAge": 50,
+#     "price": 322,
+#     "availableLocations": [
+#       "Haifa",
+#       "Tel Aviv",
+#       "Rishon LeZiyyon",
+#       "Beersheba",
+#       "Holon",
+#       "Rehovot",
+#       "Petah Tikva",
+#       "Jerusalem"
+#     ],
+#     "carGroup": 3,
+#     "description": "Best choise for wild drivers"
+#   },
+#   "responseError": ""
+# }
+
+### Delete car
+DELETE http://localhost:1020/api/cars/1
+
+#Response
+# {
+#   "responseMessage": "Car sussesfully removed",
+#   "responseError": ""
+# }
+### Update Car
+PUT http://localhost:1020/api/cars/2
+
+{
+      "carCompanyName": "MyCar",
+      "doors": 3,
+      "bigLuggage": 1,
+      "smallLuggage": 4,
+      "adultPlaces": 7,
+      "airConditioner": false,
+      "minimumAge": 61,
+      "price": 5,
+      "availableLocations":[
+        "New York"
+      ],
+      "discounts": [
+        "Days"
+      ],
+      "carGroup": 4,
+      "description": "Best choice for big family"
+}
+
+#Response
+# {
+#   "responseMessage": "Car sussesfully updated",
+#   "responseError": ""
+# }
+
+### List rents
+GET http://localhost:1020/api/rents
+
+#Response
+# {
+#   "responseMessage": [
+#     {
+#       "rentID": 1,
+#       "carID": 2,
+#       "fromDate": "2022-01-15T15:13:30Z",
+#       "toDate": "2022-01-15T15:15:30Z",
+#       "location": "New York",
+#       "availableExtras": [
+#         "Free day"
+#       ],
+#       "discounts": [
+#         "5%"
+#       ],
+#       "carDetails": "MyCar Best choice for big family.Part of 4 group. With 3 doors, 7 adult places, 0 big laggage and 0 small laggage places.Without Air Conditioner. For drivers with minimal age 61"
+#     }
+#   ],
+#   "responseError": ""
+# }
+### Create rent
+POST http://localhost:1020/api/rents
+
+{
+      "carID": 2,
+      "fromDate": "2022-01-15T15:13:30Z",
+      "toDate": "2022-01-15T15:15:30Z",
+      "location": "Netanya",
+      "availableExtras": [
+        "Free day"
+      ],
+      "discounts": [
+        "5%"
+      ],
+      "ageGroup":"70",
+      "carGroup":3
+}
+
+#Response
+# {
+#   "responseMessage": "Rent info sussesfully inserted. Rent ID number = 1",
+#   "responseError": ""
+# }
+
+### List rent with ID
+GET http://localhost:1020/api/rents/1
+
+#Response
+# {
+#   "responseMessage": {
+#     "rentID": 1,
+#     "carID": 2,
+#     "fromDate": "2022-01-15T15:13:30Z",
+#     "toDate": "2022-01-15T15:15:30Z",
+#     "location": "New York",
+#     "availableExtras": [
+#       "Free day"
+#     ],
+#     "discounts": [
+#       "5%"
+#     ],
+#     "carDetails": "MyCar Best choice for big family.Part of 4 group. With 3 doors, 7 adult places, 0 big laggage and 0 small laggage places.Without Air Conditioner. For drivers with minimal age 61"
+#   },
+#   "responseError": ""
+# }
+
+
+### Delete rent with ID
+DELETE http://localhost:1020/api/rents/1
+
+
+#Response
+# {
+#   "responseMessage": "Rent sussesfully removed",
+#   "responseError": ""
+# }
